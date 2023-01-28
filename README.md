@@ -5,7 +5,7 @@
 
 **CPU:** 10 CPU
 
-**RAM:** 16 GB
+**RAM:** 32 GB
 
 **SSD:** 1000 GB (1 TB)
 
