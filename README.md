@@ -12,6 +12,16 @@
 
 
 #### Screen oluşturma
+
+
+
+#### Screen oluşturma
+```
+sudo apt install
+```
+```
+apt install git
+```
 ```
 screen -S sui-node
 ```
