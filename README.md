@@ -9,6 +9,9 @@
 
 **SSD:** 1000 GB (1 TB)
 
+
+
+#### Screen oluşturma
 ```
 screen -S sui-node
 ```
