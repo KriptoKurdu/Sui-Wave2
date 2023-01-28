@@ -20,7 +20,7 @@
 sudo apt install
 ```
 ```
-apt install git
+apt install screen
 ```
 ```
 screen -S sui-node
@@ -53,6 +53,10 @@ rustc --version
 
 
 #### Github repo
+
+```
+apt install git
+```
 
 ```
 cd $HOME
