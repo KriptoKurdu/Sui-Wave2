@@ -34,66 +34,74 @@ rustc --version
 ```
 
 
-```
-cp $HOME/.nibid/data/priv_validator_state.json $HOME/.nibid/priv_validator_state.json.backup
-```
+#### Github repo
 
 ```
-rm -rf $HOME/.nibid/data 
+cd $HOME
+git clone https://github.com/MystenLabs/sui.git
+cd sui
+git remote add upstream https://github.com/MystenLabs/sui
+git fetch upstream
+git checkout -B testnet --track upstream/testnet
+```
+```
+mkdir $HOME/.sui
 ```
 
-```
-curl -L https://snapshots.kjnodes.com/nibiru-testnet/snapshot_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nibid
-```
+#### Genesis dosyaları Kurulumu
 
 ```
-mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json
+wget -O $HOME/.sui/genesis.blob  https://github.com/MystenLabs/sui-genesis/raw/main/testnet/genesis.blob
+```
+```
+cp $HOME/sui/crates/sui-config/data/fullnode-template.yaml $HOME/.sui/fullnode.yaml
+sed -i.bak "s|db-path:.*|db-path: \"$HOME\/.sui\/db\"| ; s|genesis-file-location:.*|genesis-file-location: \"$HOME\/.sui\/genesis.blob\"| ; s|127.0.0.1|0.0.0.0|" $HOME/.sui/fullnode.yaml
 ```
 
+#### SUİ binaries Kurulumu
 
 ```
-nibid start
-```
-
-
-
-
-
-Eski cüzdani eklemek İçin
-```
-nibid keys add wallet --recover
-```
-Yeni cüzdan oluşturmak için
-```
-nibid keys add cuzdanAdi
-```
-
-Node durdurmak için
-```
-sudo systemctl stop nibid
+cargo build --release --bin sui-node
+mv ~/sui/target/release/sui-node /usr/local/bin/
+sui-node -V
 ```
 
 
+#### Servise Kurulumu
 
-#### İlk Defa VALİDATOR Oluşturacaklar için ('cuzdanAdiniz' Kısmını kendinize göre değiştirin)
 ```
-nibid tx staking create-validator \
---amount=100000unibi \
---pubkey=$(nibid tendermint show-validator) \
---moniker=monikerAdi \
---chain-id=nibiru-testnet-2 \
---commission-rate="0.1" \
---commission-max-rate="0.10" \
---commission-max-change-rate="0.01" \
---min-self-delegation="1" \
---fees=10000unibi \
---from=cuzdanAdi \
--y
+echo "[Unit]
+Description=Sui Node
+After=network.target
+
+[Service]
+User=$USER
+Type=simple
+ExecStart=/usr/local/bin/sui-node --config-path $HOME/.sui/fullnode.yaml
+Restart=on-failure
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target" > $HOME/suid.service
+
+mv $HOME/suid.service /etc/systemd/system/
+
+sudo tee <<EOF >/dev/null /etc/systemd/journald.conf
+Storage=persistent
+EOF
 ```
 
-Delege Etmek için
+
+
+
+#### SUİ Full node başlatma
+
 ```
-nibid tx staking delegate validator_adresi 99500000unibi --from wallet --chain-id nibiru-testnet-2 --fees 5000unibi
+sudo systemctl restart systemd-journald
+sudo systemctl daemon-reload
+sudo systemctl enable suid
+sudo systemctl restart suid
+journalctl -u suid -f
 ```
 
 
