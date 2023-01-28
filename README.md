@@ -9,6 +9,11 @@
 
 **SSD:** 1000 GB (1 TB)
 
+```
+screen -S sui-node
+```
+
+
 
 #### Linux Güncellemeleri
 ```
