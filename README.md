@@ -11,9 +11,6 @@
 
 
 
-#### Screen oluşturma
-
-
 
 #### Screen oluşturma
 ```
