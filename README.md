@@ -77,6 +77,32 @@ cp $HOME/sui/crates/sui-config/data/fullnode-template.yaml $HOME/.sui/fullnode.y
 sed -i.bak "s|db-path:.*|db-path: \"$HOME\/.sui\/db\"| ; s|genesis-file-location:.*|genesis-file-location: \"$HOME\/.sui\/genesis.blob\"| ; s|127.0.0.1|0.0.0.0|" $HOME/.sui/fullnode.yaml
 ```
 
+
+
+
+
+#### Teşvikli kısımda değilseniz bu aşamayı da kurun (Video çekildikten sonra eklendi video da bu kısım yok siz yine de kurun)
+
+```
+sudo tee -a $HOME/.sui/fullnode.yaml  >/dev/null <<EOF
+
+p2p-config:
+  seed-peers:
+   - address: "/dns/ams-suifn-ss1.testnet.sui.io/udp/8084"
+   - address: "/dns/sgp-suifn-ss2.testnet.sui.io/udp/8084"
+   - address: "/dns/icn-suifn-ss3.testnet.sui.io/udp/8084"
+   - address: "/dns/ord-suifn-ss4.testnet.sui.io/udp/8084"
+   - address: "/dns/lax-suifn-ss5.testnet.sui.io/udp/8084"
+   - address: "/ip4/65.109.32.171/udp/8084"
+   - address: "/ip4/65.108.44.149/udp/8084"
+   - address: "/ip4/95.214.54.28/udp/8080"
+   - address: "/ip4/136.243.40.38/udp/8080"
+   - address: "/ip4/84.46.255.11/udp/8084"
+EOF
+```
+
+
+
 #### SUİ binaries Kurulumu
 
 ```
@@ -84,6 +110,7 @@ cargo build --release --bin sui-node
 mv ~/sui/target/release/sui-node /usr/local/bin/
 sui-node -V
 ```
+
 
 
 #### Servise Kurulumu
